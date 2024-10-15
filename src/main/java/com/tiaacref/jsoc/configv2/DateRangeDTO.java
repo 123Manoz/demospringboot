@@ -1,7 +1,11 @@
 package com.tiaacref.jsoc.configv2;
 import org.springframework.format.annotation.DateTimeFormat;
 import java.time.LocalDateTime;
+import lombok.Getter;
+import lomnok.Setter;
 
+@Getter
+@Settter
 public class DateRangeDTO {
 
     @ValidDate(message = "From date is required and must be in MM-dd-yyyy format")

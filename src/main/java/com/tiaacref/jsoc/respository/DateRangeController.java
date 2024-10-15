@@ -1,26 +1,28 @@
 package com.tiaacref.jsoc.respository;
 
-import org.springframework.beans.PropertyEditorSupport;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.*;
+import com.tiaacref.jsoc.configv2.*;
 
-import java.beans.PropertyEditorSupport;
+import jakarta.validation.Valid;
 import java.time.LocalDateTime;
 
-public class CustomDateTimeEditor extends PropertyEditorSupport {
+@RestController
+public class DateRangeController {
 
-    private final StringToLocalDateTimeConverter converter;
-    private final boolean isEndOfDay;
+    @Autowired
+    private StringToLocalDateTimeConverter converter;
 
-    public CustomDateTimeEditor(StringToLocalDateTimeConverter converter, boolean isEndOfDay) {
-        this.converter = converter;
-        this.isEndOfDay = isEndOfDay;
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        binder.registerCustomEditor(LocalDateTime.class, "from", new CustomDateTimeEditor(converter, false));
+        binder.registerCustomEditor(LocalDateTime.class, "to", new CustomDateTimeEditor(converter, true));
     }
 
-    @Override
-    public void setAsText(String text) throws IllegalArgumentException {
-        if (text == null || text.isEmpty()) {
-            setValue(null);
-        } else {
-            setValue(isEndOfDay ? converter.convertToEndOfDay(text) : converter.convert(text));
-        }
+    @GetMapping("/dateRange")
+    public String getDateRange(@Valid @ModelAttribute DateRangeDTO dateRange) {
+        LocalDateTime toDateTime = dateRange.getTo() != null ? dateRange.getTo() : LocalDateTime.now();
+        return String.format("From: %s, To: %s", dateRange.getFrom(), toDateTime);
     }
 }

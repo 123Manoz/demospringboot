@@ -1,9 +1,6 @@
 package com.tiaacref.jsoc.configv2;
 
-import org.springframework.beans.PropertyEditorSupport;
-
 import java.beans.PropertyEditorSupport;
-import java.time.LocalDateTime;
 
 public class CustomDateTimeEditor extends PropertyEditorSupport {
 
